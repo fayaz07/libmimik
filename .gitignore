@@ -1,1 +1,4 @@
 build/
+
+# Ignore all protobuf generated files
+**/*.pb.go
