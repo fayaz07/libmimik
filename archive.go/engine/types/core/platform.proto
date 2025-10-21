@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package types.core;
+
+option go_package = "mimik/types/core";
+option swift_prefix = "LM";
+
+message Platform {
+  string name = 1;
+  string min_version = 2;
+  string max_version = 3;
+  string icon_id = 4;
+}
+
+message PlatformList {
+  repeated Platform platforms = 1;
+}
