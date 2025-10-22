@@ -1,21 +1,22 @@
-MIT License
+Mimik Source-Available License v1.0  
+Copyright (c) 2025 Mohammad Fayaz
 
-Copyright (c) 2024 Mohammad Fayaz
+Permission is hereby granted to individuals to access, view, use, and modify this software, subject to the following terms:
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+1. **Open Source Access**  
+   The source code of this software is made available for transparency, learning, and contribution purposes. Individual users are free to study, modify, and run the software for personal or educational use.
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+2. **No Redistribution**  
+   Redistribution of this software, in source or compiled form, whether modified or unmodified, is strictly prohibited without prior written permission from the copyright holder.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+3. **Enterprise / Commercial Use**  
+   Use of this software by any commercial entity — including companies, non-profits, institutions, or any use intended for business, profit, or internal operations — **may require a commercial license** or prior written permission.  
+   Contact fayaz7@protonmail.com to inquire about enterprise licensing.
+
+4. **Contributions**  
+   Contributions are welcome. By submitting code, documentation, or other content, contributors agree to license their contributions under the same terms as this license and grant the project maintainers the right to use, modify, and incorporate the contributions.
+
+5. **No Warranty**  
+   This software is provided "as is", without any warranty of any kind, express or implied. Use is at your own risk.
+
+For commercial licensing, contact: fayaz7@protonmail.com
