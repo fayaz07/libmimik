@@ -1,14 +1,17 @@
-# MathLib - C++ Mathematical Operations Library
+# MathLib with Protobuf - C++ Mathematical Operations Library
 
-A simple C++ static library providing basic mathematical operations with support for both integer and floating-point arithmetic.
+A comprehensive C++ library providing basic mathematical operations with Protocol Buffers (protobuf) integration for data serialization.
 
 ## Features
 
-- **Addition**: Supports both integer and double precision floating-point addition
-- **Subtraction**: Supports both integer and double precision floating-point subtraction
+- **Mathematical Operations**: Addition and Subtraction for both integer and double precision floating-point
+- **Protocol Buffers Integration**: Support for `Lang` and `Platform` message types
+- **Multiple Build Systems**: Both CMake and Make support
 - **Static Library**: Compiled as `.a` static library for easy linking
 - **Header Files**: Clean `.h` header files for easy integration
 - **Cross-platform**: Works on macOS, Linux, and Windows
+- **Automatic Proto Generation**: Generates C++ bindings from `.proto` files
+- **Comprehensive Testing**: Unit tests for both math and protobuf functionality
 
 ## Project Structure
 
@@ -18,59 +21,117 @@ cpp-math-lib/
 │   └── math_operations.h      # Public header file
 ├── src/
 │   └── math_operations.cpp    # Implementation source
-├── lib/                       # Generated static library (.a)
-├── build/                     # Compiled object files (.o)
 ├── examples/
-│   └── main.cpp              # Example usage program
-├── Makefile                  # Build system
+│   ├── main.cpp              # Basic math example
+│   └── proto_example.cpp     # Protobuf integration example
+├── tests/
+│   ├── test_math.cpp         # Math operation tests
+│   └── test_proto.cpp        # Protobuf functionality tests
+├── build/                     # CMake build directory
+│   └── generated/            # Auto-generated protobuf C++ files
+├── lib/                       # Generated static library (.a) - Make only
+├── CMakeLists.txt            # CMake build configuration
+├── Makefile                  # Make build system (legacy)
+├── build.sh                  # Automated build script
 └── README.md                 # This file
 ```
+
+## Proto Files Used
+
+The library integrates with existing protobuf definitions:
+- `../src/models/proto/lang.proto` - Language information
+- `../src/models/proto/platform.proto` - Platform specifications
 
 ## Prerequisites
 
 - **C++ Compiler**: g++ with C++17 support
-- **Make**: GNU Make utility
-- **ar**: Archive utility (usually included with build tools)
+- **CMake**: Version 3.15 or higher (recommended)
+- **Protocol Buffers**: protoc compiler and libprotobuf
+- **Make**: GNU Make utility (for legacy Makefile)
 
 ### Installing Prerequisites
 
 **macOS:**
 ```bash
-# Install Xcode Command Line Tools
-xcode-select --install
+# Install via Homebrew (recommended)
+brew install cmake protobuf
 
-# Or install via Homebrew
-brew install gcc make
+# Or install Xcode Command Line Tools
+xcode-select --install
 ```
 
 **Ubuntu/Debian:**
 ```bash
 sudo apt update
-sudo apt install build-essential make
+sudo apt install build-essential cmake protobuf-compiler libprotobuf-dev
 ```
 
 **CentOS/RHEL:**
 ```bash
-sudo yum groupinstall "Development Tools"
-# or on newer versions:
-sudo dnf groupinstall "Development Tools"
+# CentOS/RHEL 8+
+sudo dnf install cmake protobuf-compiler protobuf-devel gcc-c++
+
+# CentOS/RHEL 7
+sudo yum install cmake3 protobuf-compiler protobuf-devel gcc-c++
 ```
 
 ## Building the Library
 
-### Quick Start
+### Quick Start (CMake - Recommended)
+
 ```bash
 # Clone or navigate to the project directory
 cd cpp-math-lib
 
-# Build the static library
+# Option 1: Use automated build script
+chmod +x build.sh
+./build.sh --help                    # See all options
+./build.sh -i -t                     # Install deps and run tests
+
+# Option 2: Manual CMake build
+mkdir build && cd build
+cmake ..
+cmake --build . --parallel
+ctest                                # Run tests
+```
+
+### Legacy Make Build
+
+```bash
+cd cpp-math-lib
+
+# Build the static library (math only)
 make
 
-# Build and run the example
+# Build and run the basic example
 make run-example
 ```
 
-### Available Make Targets
+### Build Script Options
+
+The `build.sh` script provides convenient options:
+
+```bash
+./build.sh -h                       # Show help
+./build.sh                          # Basic release build
+./build.sh -d -t                    # Debug build with tests
+./build.sh -c -i                    # Clean build with dependency installation
+./build.sh --build-dir custom_build # Use custom build directory
+```
+
+### CMake Targets
+
+| Target | Description |
+|--------|-------------|
+| `mathlib` | Basic math library (no protobuf) |
+| `mathlib_with_proto` | Math library with protobuf support |
+| `example` | Basic math example program |
+| `proto_example` | Protobuf integration example |
+| `test_math` | Math operation tests |
+| `test_proto` | Protobuf functionality tests |
+| `generate_proto` | Generate C++ files from proto definitions |
+
+### Legacy Make Targets
 
 | Target | Description |
 |--------|-------------|
@@ -85,16 +146,27 @@ make run-example
 
 ### Build Output
 
-After building, you'll find:
-- **Static Library**: `lib/libmathlib.a`
-- **Object Files**: `build/*.o`
-- **Example Program**: `examples/example`
+After building with CMake, you'll find:
+- **Libraries**: `build/libmathlib.a`, `build/libmathlib_with_proto.a`
+- **Executables**: `build/example`, `build/proto_example`
+- **Generated Proto Files**: `build/generated/lang.pb.h`, `build/generated/platform.pb.h`
+- **Test Executables**: `build/test_math`, `build/test_proto`
 
 ## Using the Library
 
-### Include in Your Project
+### Basic Math Operations
 
-**Method 1: Direct Integration**
+**Method 1: CMake Integration**
+```cmake
+# In your CMakeLists.txt
+find_package(PkgConfig REQUIRED)
+pkg_check_modules(MATHLIB REQUIRED mathlib)
+
+target_link_libraries(your_target ${MATHLIB_LIBRARIES})
+target_include_directories(your_target PRIVATE ${MATHLIB_INCLUDE_DIRS})
+```
+
+**Method 2: Direct Integration**
 ```cpp
 #include "math_operations.h"
 
@@ -105,21 +177,73 @@ int main() {
 }
 ```
 
-**Method 2: System-wide Installation**
-```bash
-# Install library and headers
-sudo make install
-
-# In your code
-#include <mathlib/math_operations.h>
-
-// Compile your program
-g++ -std=c++17 your_program.cpp -lmathlib -o your_program
-```
-
 **Method 3: Manual Linking**
 ```bash
-g++ -std=c++17 -I./include your_program.cpp -L./lib -lmathlib -o your_program
+# Basic math only
+g++ -std=c++17 -I./include your_program.cpp -L./build -lmathlib -o your_program
+
+# With protobuf support
+g++ -std=c++17 -I./include -I./build/generated your_program.cpp \
+    -L./build -lmathlib_with_proto -lprotobuf -o your_program
+```
+
+### Protobuf Integration
+
+**Using Language Messages:**
+```cpp
+#include "lang.pb.h"
+
+// Create a language message
+core::Lang lang;
+lang.set_id(1);
+lang.set_i1("en");
+lang.set_name("English");
+
+// Serialize to binary
+std::string serialized;
+lang.SerializeToString(&serialized);
+
+// Deserialize from binary
+core::Lang deserialized;
+deserialized.ParseFromString(serialized);
+```
+
+**Using Platform Messages:**
+```cpp
+#include "platform.pb.h"
+
+// Create platform list
+types::core::PlatformList platforms;
+
+// Add iOS platform
+auto* ios = platforms.add_platforms();
+ios->set_name("iOS");
+ios->set_min_version("14.0");
+ios->set_max_version("17.0");
+
+// Serialize and save
+std::string data;
+platforms.SerializeToString(&data);
+std::ofstream file("platforms.bin", std::ios::binary);
+file.write(data.data(), data.size());
+```
+
+**Combined Math + Protobuf Example:**
+```cpp
+#include "math_operations.h"
+#include "lang.pb.h"
+
+int main() {
+    // Use math operations
+    int computed_id = MathLib::Addition(10, 5);
+    
+    // Use result in protobuf message
+    core::Lang lang;
+    lang.set_id(computed_id);
+    lang.set_name("Computed Language");
+    
+    return 0;
+}
 ```
 
 ### API Reference
@@ -138,31 +262,87 @@ double Addition(double a, double b);      // Returns a + b
 double Subtraction(double a, double b);   // Returns a - b
 ```
 
-### Example Usage
+#### Protobuf Messages
 
-```cpp
-#include <iostream>
-#include "math_operations.h"
-
-int main() {
-    // Integer operations
-    int sum_int = MathLib::Addition(15, 7);        // Returns 22
-    int diff_int = MathLib::Subtraction(15, 7);    // Returns 8
-    
-    // Floating-point operations
-    double sum_double = MathLib::Addition(25.75, 12.25);     // Returns 38.00
-    double diff_double = MathLib::Subtraction(25.75, 12.25); // Returns 13.50
-    
-    std::cout << "Integer: " << sum_int << ", " << diff_int << std::endl;
-    std::cout << "Double: " << sum_double << ", " << diff_double << std::endl;
-    
-    return 0;
+**Lang Message (`core::Lang`)**
+```protobuf
+message Lang {
+  int32 id = 1;        // Language ID
+  string i1 = 2;       // ISO 639-1 code
+  string i2 = 3;       // ISO 639-2 code  
+  string i3 = 4;       // ISO 639-3 code
+  string name = 5;     // Language name
 }
+```
+
+**Platform Message (`types.core.Platform`)**
+```protobuf
+message Platform {
+  string name = 1;         // Platform name (e.g., "iOS", "Android")
+  string min_version = 2;  // Minimum supported version
+  string max_version = 3;  // Maximum supported version
+  string icon_id = 4;      // Icon identifier
+}
+
+message PlatformList {
+  repeated Platform platforms = 1;  // List of platforms
+}
+```
+
+## Running Examples and Tests
+
+### Example Programs
+
+```bash
+# Navigate to build directory
+cd build
+
+# Run basic math example
+./example
+
+# Run protobuf integration example
+./proto_example
+```
+
+### Running Tests
+
+```bash
+# Run all tests with CMake/CTest
+cd build
+ctest --verbose
+
+# Run individual tests
+./test_math
+./test_proto
+
+# Run tests with build script
+cd ..
+./build.sh -t
+```
+
+### Expected Test Output
+
+**Math Tests:**
+```
+✓ Integer addition tests passed
+✓ Double addition tests passed  
+✓ Integer subtraction tests passed
+✓ Double subtraction tests passed
+🎉 All MathLib tests passed!
+```
+
+**Protobuf Tests:**
+```
+✓ Protobuf version compatibility verified
+✓ Lang protobuf tests passed
+✓ Platform protobuf tests passed
+✓ PlatformList protobuf tests passed
+🎉 All Protobuf tests passed!
 ```
 
 ## Development
 
-### Adding New Functions
+### Adding New Math Functions
 
 1. **Add declaration** to `include/math_operations.h`:
 ```cpp
@@ -178,42 +358,99 @@ int Multiplication(int a, int b) {
 
 3. **Rebuild** the library:
 ```bash
+# With CMake
+cd build && cmake --build .
+
+# With Make (legacy)
 make clean && make
 ```
+
+### Adding New Proto Messages
+
+1. **Modify proto files** in `../src/models/proto/`
+2. **Regenerate C++ bindings**:
+```bash
+# CMake automatically regenerates on build
+cd build && cmake --build . --target generate_proto
+
+# Manual generation
+protoc --cpp_out=build/generated \
+       --proto_path=../src/models/proto \
+       ../src/models/proto/*.proto
+```
+
+3. **Update your C++ code** to use new message types
+4. **Rebuild** the library
 
 ### Testing Your Changes
 
 ```bash
-# Compile test
-make test
+# Test math changes
+cd build && ./test_math
 
-# Run example to verify
-make run-example
+# Test protobuf changes  
+./test_proto
+
+# Run all tests
+ctest
+
+# Test with build script
+cd .. && ./build.sh -t
 ```
 
 ## Troubleshooting
 
 ### Common Issues
 
-**Build fails with "command not found":**
-- Ensure g++ and make are installed
-- Check if they're in your PATH
+**CMake configuration fails:**
+- Ensure CMake 3.15+ is installed: `cmake --version`
+- Check if protobuf is available: `protoc --version`
+- Try installing dependencies: `./build.sh -i`
+
+**Protobuf compilation errors:**
+- Verify proto files exist in `../src/models/proto/`
+- Check protoc version compatibility
+- Try manual proto generation:
+  ```bash
+  protoc --cpp_out=build/generated --proto_path=../src/models/proto ../src/models/proto/*.proto
+  ```
 
 **Linking errors when using the library:**
-- Verify the library path: `-L./lib`
-- Ensure library name is correct: `-lmathlib`
-- Check header include path: `-I./include`
+- For math only: `-lmathlib`
+- For protobuf support: `-lmathlib_with_proto -lprotobuf`
+- Check library paths: `-L./build`
+- Verify header paths: `-I./include -I./build/generated`
+
+**Runtime protobuf errors:**
+- Ensure `GOOGLE_PROTOBUF_VERIFY_VERSION` is called
+- Call `google::protobuf::ShutdownProtobufLibrary()` before exit
+- Check protobuf version compatibility
+
+**Build fails with "command not found":**
+- Install required tools: `./build.sh -i`
+- Check PATH contains cmake, protoc, g++
 
 **Permission denied during installation:**
 - Use `sudo make install` for system-wide installation
-- Or install to user directory instead
+- Or use local installation paths
 
-### Compiler Flags Explanation
+### Build System Comparison
 
-- `-std=c++17`: Use C++17 standard
-- `-Wall -Wextra`: Enable most warning messages
-- `-O2`: Optimization level 2
-- `-fPIC`: Generate position-independent code
+| Feature | CMake | Make (Legacy) |
+|---------|-------|---------------|
+| Protobuf Support | ✅ Full | ❌ No |
+| Dependency Management | ✅ Automatic | ❌ Manual |
+| Cross-platform | ✅ Yes | ⚠️ Limited |
+| Testing Framework | ✅ CTest | ⚠️ Basic |
+| Parallel Builds | ✅ Yes | ⚠️ Limited |
+| **Recommendation** | **Use CMake** | Legacy only |
+
+### Performance Notes
+
+- **Build Time**: CMake builds are faster due to parallel compilation
+- **Library Size**: Math-only library is ~10KB, with protobuf ~500KB+
+- **Runtime**: Protobuf serialization adds minimal overhead
+- **Memory**: Protobuf messages use dynamic allocation
 
 ## License
 
